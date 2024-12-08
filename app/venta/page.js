@@ -2,8 +2,10 @@
 import { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 import '@fortawesome/fontawesome-free/css/all.min.css';
+import { useRouter } from 'next/navigation'; // Importa useRouter
 
 export default function VentaPage() {
+  const router = useRouter(); // Define router
   const [cart, setCart] = useState([]); // Productos seleccionados
   const [clienteData, setClienteData] = useState({
     ci_cliente: '',
@@ -17,6 +19,8 @@ export default function VentaPage() {
   const [usuarioVenta] = useState(1); // ID del usuario que realiza la venta
   const [sucursalVenta] = useState(1); // ID de la sucursal (puedes personalizar)
   const [clienteExistente, setClienteExistente] = useState(false); // Indica si el cliente ya está registrado
+  const [metodoVenta, setMetodoVenta] = useState('Efectivo');
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     const storedCart = localStorage.getItem('cart');
@@ -94,6 +98,7 @@ export default function VentaPage() {
           sucursal_venta: sucursalVenta,
           total_venta: total,
           estado_venta: 'F',
+          metodo_venta: metodoVenta,
         }),
       });
 
@@ -159,12 +164,19 @@ export default function VentaPage() {
             referencia_kardex: `Venta #${venta.id}`,
           }),
         });
-
-        if (kardexResponse.status === 404) {
-          console.warn('No hay movimientos registrados en el Kardex para este producto.');
-        } else if (!kardexResponse.ok) {
-          throw new Error('Error al registrar el movimiento en el Kardex');
+        if (!kardexResponse.ok){
+          throw new Error('Error al registrar el movimiento en el kardex')
         }
+
+        await fetch(`http://127.0.0.1:8000/api/producto/${producto.id}/`,{
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            cantidad_producto: producto.cantidad_producto - (producto.cantidad|| 1),
+          })
+        })
       }
 
       Swal.fire('Éxito', 'La venta ha sido registrada correctamente.', 'success');
@@ -186,9 +198,62 @@ export default function VentaPage() {
       setIsSubmitting(false);
     }
   };
-
+  const handleLogout = () => {
+    Swal.fire('Sesión Cerrada', 'Has salido correctamente.', 'info').then(() => {
+      router.push('/login');
+    });
+  };
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
+    <div className="min-h-screen flex flex-col bg-gray-100">
+      <div className="relative">
+        <div className="flex justify-between items-center bg-[#712b39] text-white p-4 shadow-md border-b border-black">
+          <button
+            onClick={() => setMenuOpen(!menuOpen)}
+            className="text-xl font-bold"
+          >
+            ☰
+          </button>
+          <h1 className="text-2xl font-bold">Óptica Dashboard</h1>
+        </div>
+
+        {/* Menú flotante */}
+        {menuOpen && (
+          <div className="absolute top-16 left-0 bg-white shadow-lg rounded-lg w-64 z-50">
+            <ul className="flex flex-col text-black">
+              <li
+                className="p-4 hover:bg-gray-200 cursor-pointer"
+                onClick={() => router.push('/inventario')}
+              >
+                Gestión de Inventario
+              </li>
+              <li
+                className="p-4 hover:bg-gray-200 cursor-pointer"
+                onClick={() => router.push('/visualizacion-reportes')}
+              >
+                Visualización de Reportes
+              </li>
+              <li
+                className="p-4 hover:bg-gray-200 cursor-pointer"
+                onClick={() => router.push('/dashboard')}
+              >
+                Venta
+              </li>
+              <li
+                className="p-4 hover:bg-gray-200 cursor-pointer"
+                onClick={() => router.push('/kardex')}
+              >
+                Kardex
+              </li>
+              <li
+                className="p-4 hover:bg-gray-200 cursor-pointer"
+                onClick={handleLogout}
+              >
+                Cerrar Sesión
+              </li>
+            </ul>
+          </div>
+        )}
+      </div>
       <h1 className="text-3xl font-bold text-[#712b39] mb-6">Registrar Venta</h1>
 
       <div className="bg-white p-6 rounded-lg shadow-md mb-6">
@@ -204,6 +269,18 @@ export default function VentaPage() {
               className="w-full border p-2 rounded"
               placeholder="Ingrese la cédula o identificación"
             />
+          </div>
+          <div>
+            <label className="block font-bold">Método de venta:</label>
+            <select
+              value={metodoVenta}
+              onChange={(e) => setMetodoVenta(e.target.value)}
+              className="w-full border p-2 rounded"
+            >
+              <option value="Efectivo">Efectivo</option>
+              <option value="Tarjeta de Crédito">Tarjeta de Crédito</option>
+              <option value="Transferencia">Transferencia</option>
+            </select>
           </div>
           <div>
             <label className="block font-bold">Nombre:</label>

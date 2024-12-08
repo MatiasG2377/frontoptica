@@ -91,11 +91,9 @@ export default function InventoryManagementPage() {
         ...formData,
         categoria_producto: parseInt(formData.categoria_producto) || null,
         ultima_venta_producto: formData.ultima_venta_producto || null,
-        proveedores_producto: formData.proveedores_producto || [],
       };
 
-      // Eliminar el campo 'id' si existe
-      delete payload.id;
+      delete payload.id; // Eliminar el campo 'id' si existe
 
       console.log('JSON que se enviará al backend:', JSON.stringify(payload, null, 2));
 
@@ -110,7 +108,7 @@ export default function InventoryManagementPage() {
       if (res.ok) {
         alert(selectedProducto ? 'Producto actualizado' : 'Producto creado');
         const productoData = selectedProducto || (await res.json());
-        await handleProductProveedoresRelation(payload.proveedores_producto, productoData.id);
+        await handleProductProveedoresRelation(productoData.id, formData.proveedores_producto);
         fetchProductos();
         setModalVisible(false);
         setSelectedProducto(null);
@@ -125,42 +123,32 @@ export default function InventoryManagementPage() {
     }
   };
 
-  const handleProductProveedoresRelation = async (proveedores, productoId) => {
+  const handleProductProveedoresRelation = async (productoId, proveedores) => {
     try {
       const url = 'http://127.0.0.1:8000/api/productoproveedor/';
+      for (const proveedorId of proveedores) {
+        const relation = {
+          producto_productoProveedor: parseInt(productoId, 10),
+          proveedor_productoProveedor: parseInt(proveedorId,10),
+          costo_productoProveedor: parseFloat(formData.costo_producto).toFixed(2).toString(),
+        };
 
-      if (!proveedores || !productoId) {
-        console.error('Faltan datos para la relación producto-proveedor:', { proveedores, productoId });
-        alert('No se pudo crear la relación producto-proveedor debido a datos incompletos.');
-        return;
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(relation),
+        });
+
+        if (!res.ok) {
+          console.error(`Error al registrar relación: ${JSON.stringify(relation)}`, await res.json());
+          throw new Error('Error al registrar una relación producto-proveedor.');
+        }
       }
-
-      const relations = proveedores.map((proveedorId) => ({
-        producto_productoProveedor: parseInt(productoId, 10), // Asegura que sea un número
-        proveedor_productoProveedor: parseInt(proveedorId, 10), // Asegura que sea un número
-        costo_productoProveedor: parseFloat(formData.costo_producto).toFixed(2), // Asegura que sea un decimal
-      }));
-
-      console.log('JSON:',JSON.stringify(relations,null,2));
-
-      const res = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(relations),
-      });
-
-      if (!res.ok) {
-        const errorData = await res.json();
-        console.error('Errores en la relación de producto-proveedor:', errorData);
-        alert('Error al guardar la relación producto-proveedor.');
-      } else {
-        console.log('Relación producto-proveedor creada exitosamente.');
-      }
+      console.log('Relaciones registradas correctamente.');
     } catch (error) {
-      console.error('Error al guardar la relación producto-proveedor:', error);
-      alert('Error inesperado al guardar la relación producto-proveedor.');
+      console.error('Error al guardar las relaciones:', error);
     }
   };
 
@@ -200,7 +188,7 @@ export default function InventoryManagementPage() {
       cantidad_producto: '',
       minimo_producto: '',
       maximo_producto: '',
-      sucursal_producto: 1, // ID quemado de sucursal
+      sucursal_producto: 1,
       estado_producto: 'Disponible',
       descripcion_producto: '',
       marca_producto: '',
@@ -218,7 +206,6 @@ export default function InventoryManagementPage() {
 
   return (
     <div className="flex flex-col h-screen">
-      {/* Header con menú de hamburguesa */}
       <div className="relative">
         <div className="flex justify-between items-center bg-[#712b39] text-white p-4 shadow-md border-b border-black">
           <button onClick={() => setMenuOpen(!menuOpen)} className="text-xl font-bold">
@@ -233,7 +220,6 @@ export default function InventoryManagementPage() {
           </button>
         </div>
 
-        {/* Menú flotante */}
         {menuOpen && (
           <div className="absolute top-16 left-0 bg-white shadow-lg rounded-lg w-64 z-50">
             <ul className="flex flex-col text-black">
@@ -272,7 +258,6 @@ export default function InventoryManagementPage() {
         )}
       </div>
 
-      {/* Productos */}
       <div className="flex flex-1 overflow-hidden">
         <div className="flex-1 bg-gray-100 overflow-y-auto p-4">
           <h2 className="text-2xl font-bold mb-2 text-[#712b39]">Productos</h2>
@@ -318,7 +303,6 @@ export default function InventoryManagementPage() {
         </div>
       </div>
 
-      {/* Modal */}
       {modalVisible && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-2/3">
@@ -326,7 +310,6 @@ export default function InventoryManagementPage() {
               {selectedProducto ? 'Editar Producto' : 'Agregar Producto'}
             </h2>
             <div className="grid grid-cols-2 gap-4">
-              {/* Primera columna */}
               <div className="flex flex-col space-y-4">
                 <input
                   name="nombre_producto"
@@ -389,7 +372,6 @@ export default function InventoryManagementPage() {
                   className="p-2 border rounded"
                 />
               </div>
-              {/* Segunda columna */}
               <div className="flex flex-col space-y-4">
                 <textarea
                   name="descripcion_producto"
