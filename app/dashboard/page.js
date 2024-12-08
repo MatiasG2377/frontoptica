@@ -185,7 +185,13 @@ export default function DashboardPage() {
                 className="p-4 hover:bg-gray-200 cursor-pointer"
                 onClick={() => router.push('/inventario')}
               >
-                Gestión de Inventario
+                Gestión de Stock
+              </li>
+                            <li
+                className="p-4 hover:bg-gray-200 cursor-pointer"
+                onClick={() => router.push('/ingresos')}
+              >
+                Entradas al Inventario
               </li>
               <li
                 className="p-4 hover:bg-gray-200 cursor-pointer"
