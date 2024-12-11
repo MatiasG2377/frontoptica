@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { use, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 export default function InventoryManagementPage() {
@@ -10,6 +10,7 @@ export default function InventoryManagementPage() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedProducto, setSelectedProducto] = useState(null);
+  const [file, setFile] = useState(null);
   const [formData, setFormData] = useState({
     nombre_producto: '',
     categoria_producto: '',
@@ -33,6 +34,54 @@ export default function InventoryManagementPage() {
     fetchProveedores();
   }, []);
 
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    if (!selectedFile || !['image/jpeg', 'image/png'].includes(selectedFile.type)) {
+      alert('Por favor, selecciona un archivo JPG o PNG válido.');
+      return;
+    }
+    setFile(selectedFile);
+  };
+  
+  
+
+  const uploadImageToCloudinary = async () => {
+    if (!file) {
+      console.error('No se seleccionó ningún archivo.');
+      return null;
+    }
+  
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('upload_preset', process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET);
+  
+    try {
+      const res = await fetch(
+        `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`,
+        {
+          method: 'POST',
+          body: formData,
+        }
+      );
+  
+      if (!res.ok) {
+        const errorData = await res.json();
+        console.error('Error al subir a Cloudinary:', errorData);
+        throw new Error('Cloudinary upload failed');
+      }
+  
+      const data = await res.json();
+      console.log('URL de la imagen subida:', data.secure_url);
+      return data.secure_url; // Devuelve la URL
+    } catch (error) {
+      console.error('Error al subir la imagen a Cloudinary:', error.message);
+      return null;
+    }
+  };
+  
+  
+  
+  
   const fetchProductos = async () => {
     try {
       const res = await fetch('http://127.0.0.1:8000/api/producto/');
@@ -82,6 +131,10 @@ export default function InventoryManagementPage() {
 
   const handleAddOrUpdateProducto = async () => {
     try {
+      const imageUrl = await uploadImageToCloudinary();
+      if (imageUrl){
+        formData.imagen_producto = imageUrl;
+      }
       const method = selectedProducto ? 'PUT' : 'POST';
       const url = selectedProducto
         ? `http://127.0.0.1:8000/api/producto/${selectedProducto.id}/`
@@ -151,7 +204,7 @@ export default function InventoryManagementPage() {
       console.error('Error al guardar las relaciones:', error);
     }
   };
-
+  
   const handleEditProducto = (producto) => {
     setSelectedProducto(producto);
     setFormData({
@@ -394,12 +447,12 @@ export default function InventoryManagementPage() {
                   className="p-2 border rounded"
                 />
                 <input
-                  name="imagen_producto"
-                  value={formData.imagen_producto}
-                  onChange={handleInputChange}
-                  placeholder="URL de la Imagen"
+                  type="file"
+                  onChange={handleFileChange}
+                  accept="image/*"
                   className="p-2 border rounded"
                 />
+
                 <select
                   name="proveedores_producto"
                   multiple
