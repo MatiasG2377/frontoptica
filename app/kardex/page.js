@@ -152,7 +152,7 @@ export default function KardexPage() {
           >
             ☰
           </button>
-          <h1 className="text-2xl font-bold">Óptica Dashboard</h1>
+          <h1 className="text-2xl font-bold">Kardex</h1>
         </div>
 
         {/* Menú flotante */}
@@ -201,7 +201,6 @@ export default function KardexPage() {
       </div>
 
       <div className="flex-1 flex flex-col p-6">
-        <h1 className="text-3xl font-bold text-[#712b39] mb-6">Gestión de Kardex</h1>
         <div className="bg-white p-4 rounded-lg shadow-md mb-6 flex-1">
           <h2 className="text-2xl font-bold mb-4">Buscar Producto</h2>
           <input

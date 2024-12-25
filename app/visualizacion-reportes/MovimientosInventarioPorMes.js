@@ -2,16 +2,18 @@
 
 import React, { useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
-import "../utils/chartSetup"; // Importar configuración global
+import "../utils/chartSetup";
 import axios from "axios";
 
 const MovimientosInventarioPorMes = () => {
     const [chartData, setChartData] = useState({ labels: [], datasets: [] });
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
-        axios
-            .get("http://127.0.0.1:8000/api/movimientos/inventario_por_mes/")
-            .then((response) => {
+        const fetchData = async () => {
+            try {
+                const response = await axios.get("http://127.0.0.1:8000/api/movimientos/inventario_por_mes/");
                 const labels = response.data.map((item) =>
                     new Date(item.mes).toLocaleString("default", { month: "short", year: "numeric" })
                 );
@@ -45,9 +47,18 @@ const MovimientosInventarioPorMes = () => {
                         },
                     ],
                 });
-            })
-            .catch((error) => console.error(error));
+            } catch (err) {
+                setError("Error al cargar los datos.");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
     }, []);
+
+    if (loading) return <p>Cargando datos...</p>;
+    if (error) return <p>{error}</p>;
 
     return (
         <div>

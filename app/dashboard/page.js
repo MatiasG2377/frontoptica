@@ -167,7 +167,7 @@ export default function DashboardPage() {
           >
             ☰
           </button>
-          <h1 className="text-2xl font-bold">Óptica Dashboard</h1>
+          <h1 className="text-2xl font-bold">Ventas</h1>
           <input
             type="text"
             placeholder="Buscar productos..."

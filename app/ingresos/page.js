@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import Swal from 'sweetalert2';
 
 export default function IngresoProductosPage() {
@@ -18,6 +19,8 @@ export default function IngresoProductosPage() {
   const [marca, setMarca] = useState('');
   const [metodoValoracion, setMetodoValoracion] = useState('Promedio');
   const [isLoading, setIsLoading] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const router = useRouter(); // Para la navegación
 
   useEffect(() => {
     fetchProductos();
@@ -206,10 +209,68 @@ export default function IngresoProductosPage() {
       setIsLoading(false);
     }
   };
-
+  const handleLogout = () => {
+    Swal.fire('Sesión Cerrada', 'Has salido correctamente.', 'info').then(() => {
+      router.push('/login');
+    });
+  };
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
-      <h1 className="text-3xl font-bold text-[#712b39] mb-6">Registrar Ingreso de Productos</h1>
+    <div className="min-h-screen flex flex-col bg-gray-100">
+            <div className="relative">
+        <div className="flex justify-between items-center bg-[#712b39] text-white p-4 shadow-md border-b border-black">
+          <button
+            onClick={() => setMenuOpen(!menuOpen)}
+            className="text-xl font-bold"
+          >
+            ☰
+          </button>
+          <h1 className="text-2xl font-bold">Entradas al Inventario</h1>
+        </div>
+
+        {/* Menú flotante */}
+        {menuOpen && (
+          <div className="absolute top-16 left-0 bg-white shadow-lg rounded-lg w-64 z-50">
+            <ul className="flex flex-col text-black">
+              <li
+                className="p-4 hover:bg-gray-200 cursor-pointer"
+                onClick={() => router.push('/inventario')}
+              >
+                Gestión de Stock
+              </li>
+              <li
+                className="p-4 hover:bg-gray-200 cursor-pointer"
+                onClick={() => router.push('/ingresos')}
+              >
+                Entradas al Inventario
+              </li>
+              <li
+                className="p-4 hover:bg-gray-200 cursor-pointer"
+                onClick={() => router.push('/visualizacion-reportes')}
+              >
+                Visualización de Reportes
+              </li>
+              <li
+                className="p-4 hover:bg-gray-200 cursor-pointer"
+                onClick={() => router.push('/dashboard')}
+              >
+                Venta
+              </li>
+              <li
+                className="p-4 hover:bg-gray-200 cursor-pointer"
+                onClick={() => router.push('/kardex')}
+              >
+                Kardex
+              </li>
+              <li
+                className="p-4 hover:bg-gray-200 cursor-pointer"
+                onClick={handleLogout}
+              >
+                Cerrar Sesión
+              </li>
+            </ul>
+          </div>
+        )}
+      </div>
 
       <div className="bg-white p-6 rounded-lg shadow-md">
         <h2 className="text-xl font-bold mb-4">Seleccionar Producto</h2>

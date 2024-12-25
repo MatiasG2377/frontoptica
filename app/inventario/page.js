@@ -264,7 +264,7 @@ export default function InventoryManagementPage() {
           <button onClick={() => setMenuOpen(!menuOpen)} className="text-xl font-bold">
             ☰
           </button>
-          <h1 className="text-2xl font-bold">Gestión de Inventario</h1>
+          <h1 className="text-2xl font-bold">Gestión de Stock</h1>
           <button
             onClick={handleOpenModal}
             className="bg-[#fcda11] text-black px-4 py-2 rounded-lg font-bold hover:bg-yellow-600"
