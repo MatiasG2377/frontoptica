@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Grid, Select, MenuItem, FormControl, InputLabel } from "@mui/material";
+import { Grid, Select, MenuItem, FormControl, InputLabel, Button } from "@mui/material";
 import ProductosBajoStock from "./ProductosBajoStock";
 import VentasPorMes from "./VentasPorMes";
 import VentasPorSucursal from "./VentasPorSucursal";
@@ -17,9 +17,36 @@ const ReportDashboard = () => {
     const [productos, setProductos] = useState([]);
     const [selectedProducto, setSelectedProducto] = useState("");
 
+    const [models, setModels] = useState([]); // Modelos disponibles
+    const [selectedModel, setSelectedModel] = useState("Venta"); // Modelo seleccionado
+    const [chartData, setChartData] = useState({
+        model: "Venta",
+        xField: "",
+        yField: "",
+        chartType: "bar",
+        filters: {},
+        options: {
+            title: "",
+            xLabel: "",
+            yLabel: "",
+            color: "#2196F3"
+        }
+    });
+    const [availableFields, setAvailableFields] = useState([]);
+    const [chartImage, setChartImage] = useState(null);
+
     const router = useRouter();
 
     useEffect(() => {
+        const fetchModels = async () => {
+            try {
+                const response = await axios.get("http://127.0.0.1:8000/api/models/");
+                setModels(response.data.models);
+            } catch (error) {
+                console.error("Error al cargar los modelos:", error);
+            }
+        };
+
         const fetchProductos = async () => {
             try {
                 const response = await axios.get("http://127.0.0.1:8000/api/productos/");
@@ -29,8 +56,25 @@ const ReportDashboard = () => {
             }
         };
 
+        fetchModels();
         fetchProductos();
     }, []);
+
+    useEffect(() => {
+        const fetchFields = async () => {
+            if (selectedModel) {
+                try {
+                    const response = await axios.get(`http://127.0.0.1:8000/api/model-fields/${selectedModel}/`);
+                    setAvailableFields(response.data.fields);
+                    setChartData((prev) => ({ ...prev, model: selectedModel }));
+                } catch (error) {
+                    console.error("Error al cargar los campos del modelo:", error);
+                }
+            }
+        };
+
+        fetchFields();
+    }, [selectedModel]);
 
     const handleChange = (event) => {
         setSelectedProducto(event.target.value);
@@ -39,6 +83,15 @@ const ReportDashboard = () => {
     const handleLogout = () => {
         localStorage.removeItem('userId');
         router.push('/login');
+    };
+
+    const handleGenerateChart = async () => {
+        try {
+            const response = await axios.post("http://127.0.0.1:8000/api/generate-chart/", chartData);
+            setChartImage(response.data.image);
+        } catch (error) {
+            console.error("Error generando el gráfico:", error);
+        }
     };
 
     return (
@@ -62,7 +115,7 @@ const ReportDashboard = () => {
                                 className="p-4 hover:bg-gray-200 cursor-pointer"
                                 onClick={() => router.push('/inventario')}
                             >
-                                Gestión de Stock
+                                Gestión de Productos
                             </li>
                             <li
                                 className="p-4 hover:bg-gray-200 cursor-pointer"
@@ -119,38 +172,69 @@ const ReportDashboard = () => {
                             <VentasPorSucursal />
                         </div>
                     </Grid>
-                    <Grid item xs={12} md={6} lg={6}>
-                        <div style={{ boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)", padding: "15px", borderRadius: "10px" }}>
-                            <h2 style={{ textAlign: "center" }}>Top 5 Productos Más Vendidos</h2>
-                            <TopProductosVendidos />
-                        </div>
-                    </Grid>
-                    <Grid item xs={12} md={6} lg={6}>
-                        <div style={{ boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)", padding: "15px", borderRadius: "10px" }}>
-                            <h2 style={{ textAlign: "center" }}>Movimientos de Inventario por Mes</h2>
-                            <MovimientosInventarioPorMes />
-                        </div>
-                    </Grid>
-                    <Grid item xs={12} md={6} lg={6}>
-                        <FormControl fullWidth style={{ marginBottom: "20px" }}>
-                            <InputLabel>Seleccionar Producto</InputLabel>
-                            <Select value={selectedProducto} onChange={handleChange}>
-                                {productos.map((producto) => (
-                                    <MenuItem key={producto.id} value={producto.id}>
-                                        {producto.nombre_producto}
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
-                        {/* <div style={{ boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)", padding: "15px", borderRadius: "10px" }}>
-                            <h2 style={{ textAlign: "center" }}>Historial Kardex</h2>
-                            <HistorialKardex productoId={selectedProducto} />
-                        </div> */}
-                    </Grid>
-                    <Grid item xs={12} md={6} lg={6}>
-                        <div style={{ boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)", padding: "15px", borderRadius: "10px" }}>
-                            <h2 style={{ textAlign: "center" }}>Evolución del Stock</h2>
-                            <EvolucionStock productoId={selectedProducto} />
+
+                    {/* Sección de Personalización de Gráficos */}
+                    <Grid item xs={12}>
+                        <div style={{ boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)", padding: "20px", borderRadius: "10px" }}>
+                            <h2 style={{ textAlign: "center", marginBottom: "20px" }}>Personalización de Gráficos</h2>
+                            <FormControl fullWidth style={{ marginBottom: "20px" }}>
+                                <InputLabel>Modelo</InputLabel>
+                                <Select
+                                    value={selectedModel}
+                                    onChange={(e) => setSelectedModel(e.target.value)}
+                                >
+                                    {models.map((model) => (
+                                        <MenuItem key={model} value={model}>{model}</MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
+                            <FormControl fullWidth style={{ marginBottom: "20px" }}>
+                                <InputLabel>Tipo de Gráfico</InputLabel>
+                                <Select
+                                    value={chartData.chartType}
+                                    onChange={(e) => setChartData({ ...chartData, chartType: e.target.value })}
+                                >
+                                    <MenuItem value="bar">Barra</MenuItem>
+                                    <MenuItem value="line">Línea</MenuItem>
+                                    <MenuItem value="scatter">Dispersión</MenuItem>
+                                    <MenuItem value="histogram">Histograma</MenuItem>
+                                </Select>
+                            </FormControl>
+                            <FormControl fullWidth style={{ marginBottom: "20px" }}>
+                                <InputLabel>Campo X</InputLabel>
+                                <Select
+                                    value={chartData.xField}
+                                    onChange={(e) => setChartData({ ...chartData, xField: e.target.value })}
+                                >
+                                    {availableFields.map((field) => (
+                                        <MenuItem key={field} value={field}>{field}</MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
+                            <FormControl fullWidth style={{ marginBottom: "20px" }}>
+                                <InputLabel>Campo Y</InputLabel>
+                                <Select
+                                    value={chartData.yField}
+                                    onChange={(e) => setChartData({ ...chartData, yField: e.target.value })}
+                                >
+                                    {availableFields.map((field) => (
+                                        <MenuItem key={field} value={field}>{field}</MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={handleGenerateChart}
+                                fullWidth
+                            >
+                                Generar Gráfico
+                            </Button>
+                            {chartImage && (
+                                <div style={{ marginTop: "20px", textAlign: "center" }}>
+                                    <img src={`data:image/png;base64,${chartImage}`} alt="Gráfico generado" style={{ maxWidth: "100%", borderRadius: "10px" }} />
+                                </div>
+                            )}
                         </div>
                     </Grid>
                 </Grid>

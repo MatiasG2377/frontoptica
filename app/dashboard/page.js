@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Swal from 'sweetalert2';
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -118,39 +119,49 @@ export default function DashboardPage() {
     router.push('/venta');
   };
 
-  const handleLogout = async () => {
-    const refreshToken = localStorage.getItem('refresh_token');
-    if (!refreshToken) {
-      alert('No se encontró el token de refresco. Inicia sesión nuevamente.');
-      return;
-    }
+const handleLogout = async () => {
+  const refreshToken = localStorage.getItem('refresh_token');
+  if (!refreshToken) {
+    alert('No se encontró el token de refresco. Inicia sesión nuevamente.');
+    return;
+  }
 
-    try {
-      const res = await fetch('http://127.0.0.1:8000/api/logout/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('access_token')}`,
-        },
-        body: JSON.stringify({
-          refresh_token: refreshToken,
-        }),
-      });
+  try {
+    const res = await fetch('http://127.0.0.1:8000/api/logout/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+      },
+      body: JSON.stringify({
+        refresh_token: refreshToken,
+      }),
+    });
 
-      if (res.ok) {
-        localStorage.removeItem('access_token');
-        localStorage.removeItem('refresh_token');
-        alert('Sesión cerrada exitosamente.');
+    if (res.ok) {
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('refresh_token');
+      Swal.fire({
+        title: 'Sesión cerrada',
+        text: 'Has cerrado sesión exitosamente.',
+        icon: 'success',
+        confirmButtonColor: '#712b39',
+      }).then(() => {
         router.push('/login');
-      } else {
-        const data = await res.json();
-        alert(`Error al cerrar sesión: ${data.detail}`);
-      }
-    } catch (error) {
-      console.error('Error al cerrar sesión:', error);
-      alert('Ocurrió un error al intentar cerrar sesión.');
-    }
-  };
+      });
+    } else {
+      const data = await res.json();
+      Swal.fire({
+        title: 'Error',
+        text: `Error al cerrar sesión: ${data.detail}`,
+        icon: 'error',
+        confirmButtonColor: '#712b39',
+      });    }
+  } catch (error) {
+    console.error('Error al cerrar sesión:', error);
+    alert('Ocurrió un error al intentar cerrar sesión.');
+  }
+};
 
   const filteredProductos = productos.filter((producto) =>
     producto.nombre_producto.toLowerCase().includes(search.toLowerCase())
@@ -185,7 +196,7 @@ export default function DashboardPage() {
                 className="p-4 hover:bg-gray-200 cursor-pointer"
                 onClick={() => router.push('/inventario')}
               >
-                Gestión de Stock
+                Gestión de Productos
               </li>
                             <li
                 className="p-4 hover:bg-gray-200 cursor-pointer"
