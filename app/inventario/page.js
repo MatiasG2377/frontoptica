@@ -1,7 +1,7 @@
 'use client';
 import { use, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-
+import Swal from 'sweetalert2';
 export default function InventoryManagementPage() {
   const router = useRouter();
   const [productos, setProductos] = useState([]);
@@ -173,7 +173,12 @@ export default function InventoryManagementPage() {
       });
   
       if (res.ok) {
-        alert(selectedProducto ? 'Producto actualizado' : 'Producto creado');
+        Swal.fire({
+          icon: 'success',
+          title: selectedProducto ? 'Producto actualizado' : 'Producto creado',
+          showConfirmButton: false,
+          timer: 1500
+        });
         const productoData = selectedProducto || (await res.json());
         await handleProductProveedoresRelation(productoData.id, formData.proveedores_producto);
         fetchProductos();
@@ -183,8 +188,13 @@ export default function InventoryManagementPage() {
       } else {
         const errorData = await res.json();
         console.error('Errores devueltos por el backend:', errorData);
-        alert('Error al guardar el producto.');
+        Swal.fire({
+          icon: 'error',
+          title: 'Error al guardar el producto',
+          text: 'Por favor, verifica los datos e intenta nuevamente.'
+        });
       }
+      
     } catch (error) {
       console.error('Error al guardar el producto:', error);
     }

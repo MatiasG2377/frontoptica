@@ -8,21 +8,20 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const router = useRouter();
 
-  // Función para obtener el ID del usuario usando el nuevo endpoint
   const fetchUserIdFromUsuario = async (username) => {
     try {
       const res = await fetch(`http://127.0.0.1:8000/api/usuario/obtener-id/?username=${username}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('access_token')}`, // Enviar el token de acceso
+          Authorization: `Bearer ${localStorage.getItem('access_token')}`,
         },
       });
 
       if (res.ok) {
         const data = await res.json();
-        localStorage.setItem('userId', data.id); // Guarda el ID en localStorage
-        console.log('User ID almacenado:', data.id); // Depuración
+        localStorage.setItem('userId', data.id);
+        console.log('User ID almacenado:', data.id);
         return data.id;
       } else {
         const error = await res.json();
@@ -39,11 +38,9 @@ export default function LoginPage() {
     }
   };
 
-  // Manejo del envío del formulario de inicio de sesión
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Realizar el login y obtener los tokens
       const res = await fetch('http://127.0.0.1:8000/api/login/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -52,18 +49,14 @@ export default function LoginPage() {
 
       if (res.ok) {
         const { access, refresh } = await res.json();
-
-        // Guardar tokens en localStorage
         localStorage.setItem('access_token', access);
         localStorage.setItem('refresh_token', refresh);
 
         console.log('Tokens almacenados correctamente.');
 
-        // Llamar al endpoint para obtener el user_id
         const userId = await fetchUserIdFromUsuario(username);
 
         if (userId) {
-          // Redirigir al Dashboard
           Swal.fire({
             icon: 'success',
             title: 'Inicio de sesión exitoso',
@@ -94,8 +87,19 @@ export default function LoginPage() {
     }
   };
 
+  const redirectToAdminLogin = () => {
+    window.location.href = 'http://localhost:8000/admin/login/?next=/admin/';
+  };
+
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+    <div className="flex items-center justify-center min-h-screen bg-gray-100 relative">
+      <button
+        onClick={redirectToAdminLogin}
+        className="absolute top-4 right-4 px-4 py-2 text-sm rounded-lg transition border-2 border-[#712b39] text-[#712b39] hover:bg-[#712b39] hover:text-white"
+      >
+        Acceso Administrador
+      </button>
+      
       <div className="bg-white shadow-md rounded-lg p-8 w-full max-w-sm">
         <div className="flex justify-center mb-6">
           <img src="/img/logo.webp" alt="Logo de la empresa" className="h-16" />
