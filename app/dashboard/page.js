@@ -89,28 +89,34 @@ export default function DashboardPage() {
   }, []);
 
   const handleAddToCart = (product) => {
+    if (product.cantidad_producto <= product.minimo_producto) {
+      Swal.fire({
+        title: 'Stock bajo',
+        text: `El producto "${product.nombre_producto}" tiene un stock bajo (${product.cantidad_producto} disponibles).`,
+        icon: 'warning',
+        confirmButtonColor: '#712b39',
+      });
+    }
+  
     const existingProductIndex = cart.findIndex((item) => item.id === product.id);
-
+  
     if (existingProductIndex >= 0) {
-      // Si el producto ya está en el carrito, incrementa la cantidad
       const updatedCart = [...cart];
       updatedCart[existingProductIndex].cantidad += 1;
       setCart(updatedCart);
     } else {
-      // Si no está en el carrito, agrégalo con cantidad inicial 1
       setCart([...cart, { ...product, cantidad: 1 }]);
     }
-
-    // Guarda el carrito en localStorage
+  
     localStorage.setItem('cart', JSON.stringify(cart));
   };
+  
 
   const handleRemoveFromCart = (index) => {
     const updatedCart = [...cart];
     updatedCart.splice(index, 1);
     setCart(updatedCart);
 
-    // Actualiza el carrito en localStorage
     localStorage.setItem('cart', JSON.stringify(updatedCart));
   };
 
@@ -119,49 +125,50 @@ export default function DashboardPage() {
     router.push('/venta');
   };
 
-const handleLogout = async () => {
-  const refreshToken = localStorage.getItem('refresh_token');
-  if (!refreshToken) {
-    alert('No se encontró el token de refresco. Inicia sesión nuevamente.');
-    return;
-  }
+  const handleLogout = async () => {
+    const refreshToken = localStorage.getItem('refresh_token');
+    if (!refreshToken) {
+      alert('No se encontró el token de refresco. Inicia sesión nuevamente.');
+      return;
+    }
 
-  try {
-    const res = await fetch('http://127.0.0.1:8000/api/logout/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('access_token')}`,
-      },
-      body: JSON.stringify({
-        refresh_token: refreshToken,
-      }),
-    });
-
-    if (res.ok) {
-      localStorage.removeItem('access_token');
-      localStorage.removeItem('refresh_token');
-      Swal.fire({
-        title: 'Sesión cerrada',
-        text: 'Has cerrado sesión exitosamente.',
-        icon: 'success',
-        confirmButtonColor: '#712b39',
-      }).then(() => {
-        router.push('/login');
+    try {
+      const res = await fetch('http://127.0.0.1:8000/api/logout/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+        },
+        body: JSON.stringify({
+          refresh_token: refreshToken,
+        }),
       });
-    } else {
-      const data = await res.json();
-      Swal.fire({
-        title: 'Error',
-        text: `Error al cerrar sesión: ${data.detail}`,
-        icon: 'error',
-        confirmButtonColor: '#712b39',
-      });    }
-  } catch (error) {
-    console.error('Error al cerrar sesión:', error);
-    alert('Ocurrió un error al intentar cerrar sesión.');
-  }
-};
+
+      if (res.ok) {
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
+        Swal.fire({
+          title: 'Sesión cerrada',
+          text: 'Has cerrado sesión exitosamente.',
+          icon: 'success',
+          confirmButtonColor: '#712b39',
+        }).then(() => {
+          router.push('/login');
+        });
+      } else {
+        const data = await res.json();
+        Swal.fire({
+          title: 'Error',
+          text: `Error al cerrar sesión: ${data.detail}`,
+          icon: 'error',
+          confirmButtonColor: '#712b39',
+        });
+      }
+    } catch (error) {
+      console.error('Error al cerrar sesión:', error);
+      alert('Ocurrió un error al intentar cerrar sesión.');
+    }
+  };
 
   const filteredProductos = productos.filter((producto) =>
     producto.nombre_producto.toLowerCase().includes(search.toLowerCase())
@@ -198,7 +205,7 @@ const handleLogout = async () => {
               >
                 Gestión de Productos
               </li>
-                            <li
+              <li
                 className="p-4 hover:bg-gray-200 cursor-pointer"
                 onClick={() => router.push('/ingresos')}
               >
@@ -224,6 +231,12 @@ const handleLogout = async () => {
               </li>
               <li
                 className="p-4 hover:bg-gray-200 cursor-pointer"
+                onClick={() => router.push('/register')}
+              >
+                Registrar usuario
+              </li>
+              <li
+                className="p-4 hover:bg-gray-200 cursor-pointer"
                 onClick={handleLogout}
               >
                 Cerrar Sesión
@@ -237,36 +250,38 @@ const handleLogout = async () => {
       <div className="flex flex-1 overflow-hidden">
         {/* Menú lateral */}
         <div
-          className="w-1/5 bg-[#712b39] text-white flex flex-col items-center border-r border-black h-full"
+          className="w-1/5 bg-[#712b39] text-white flex flex-col border-r border-black h-full"
           style={{
             minWidth: '200px',
           }}
         >
-          <ul className="w-full">
-            <li
-              className={`p-4 cursor-pointer text-center ${
-                selectedCategoria === null
-                  ? 'bg-[#fcda11] text-black font-bold'
-                  : 'hover:bg-[#5e242e]'
-              }`}
-              onClick={() => setSelectedCategoria(null)}
-            >
-              Todas las Categorías
-            </li>
-            {categorias.map((categoria) => (
+          <div className="flex-1 flex items-center">
+            <ul className="w-full">
               <li
-                key={categoria.id}
                 className={`p-4 cursor-pointer text-center ${
-                  selectedCategoria === categoria.id
+                  selectedCategoria === null
                     ? 'bg-[#fcda11] text-black font-bold'
                     : 'hover:bg-[#5e242e]'
                 }`}
-                onClick={() => setSelectedCategoria(categoria.id)}
+                onClick={() => setSelectedCategoria(null)}
               >
-                {categoria.nombre_categoria}
+                Todas las Categorías
               </li>
-            ))}
-          </ul>
+              {categorias.map((categoria) => (
+                <li
+                  key={categoria.id}
+                  className={`p-4 cursor-pointer text-center ${
+                    selectedCategoria === categoria.id
+                      ? 'bg-[#fcda11] text-black font-bold'
+                      : 'hover:bg-[#5e242e]'
+                  }`}
+                  onClick={() => setSelectedCategoria(categoria.id)}
+                >
+                  {categoria.nombre_categoria}
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
 
         {/* Productos */}

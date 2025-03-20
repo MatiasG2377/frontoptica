@@ -17,8 +17,8 @@ const ReportDashboard = () => {
     const [productos, setProductos] = useState([]);
     const [selectedProducto, setSelectedProducto] = useState("");
 
-    const [models, setModels] = useState([]); // Modelos disponibles
-    const [selectedModel, setSelectedModel] = useState("Venta"); // Modelo seleccionado
+    const [models, setModels] = useState([]);
+    const [selectedModel, setSelectedModel] = useState("Venta");
     const [chartData, setChartData] = useState({
         model: "Venta",
         xField: "",
@@ -95,7 +95,7 @@ const ReportDashboard = () => {
     };
 
     return (
-        <div className="min-h-screen flex flex-col bg-gray-100">
+        <div className="flex flex-col h-screen">
             <div className="relative">
                 <div className="flex justify-between items-center bg-[#712b39] text-white p-4 shadow-md border-b border-black">
                     <button
@@ -104,10 +104,12 @@ const ReportDashboard = () => {
                     >
                         ☰
                     </button>
-                    <h1 className="text-2xl font-bold">Visualización de Reportes</h1>
+                    <h1 className="text-2xl font-bold absolute left-1/2 transform -translate-x-1/2">
+                        Reportes gráficos
+                    </h1>
+                    <div className="w-8"></div>
                 </div>
 
-                {/* Menú flotante */}
                 {menuOpen && (
                     <div className="absolute top-16 left-0 bg-white shadow-lg rounded-lg w-64 z-50">
                         <ul className="flex flex-col text-black">
@@ -143,6 +145,12 @@ const ReportDashboard = () => {
                             </li>
                             <li
                                 className="p-4 hover:bg-gray-200 cursor-pointer"
+                                onClick={() => router.push('/register')}
+                            >
+                                Registrar usuario
+                            </li>
+                            <li
+                                className="p-4 hover:bg-gray-200 cursor-pointer"
                                 onClick={handleLogout}
                             >
                                 Cerrar Sesión
@@ -173,7 +181,6 @@ const ReportDashboard = () => {
                         </div>
                     </Grid>
 
-                    {/* Sección de Personalización de Gráficos */}
                     <Grid item xs={12}>
                         <div style={{ boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)", padding: "20px", borderRadius: "10px" }}>
                             <h2 style={{ textAlign: "center", marginBottom: "20px" }}>Personalización de Gráficos</h2>

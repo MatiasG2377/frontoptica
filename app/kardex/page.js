@@ -235,6 +235,12 @@ export default function KardexPage() {
               </li>
               <li
                 className="p-4 hover:bg-gray-200 cursor-pointer"
+                onClick={() => router.push('/register')}
+              >
+                Registrar usuario
+              </li>
+              <li
+                className="p-4 hover:bg-gray-200 cursor-pointer"
                 onClick={handleLogout}
               >
                 Cerrar Sesión

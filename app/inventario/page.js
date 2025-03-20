@@ -11,6 +11,8 @@ export default function InventoryManagementPage() {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedProducto, setSelectedProducto] = useState(null);
   const [file, setFile] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
+
   const [formData, setFormData] = useState({
     nombre_producto: '',
     categoria_producto: '',
@@ -282,6 +284,10 @@ export default function InventoryManagementPage() {
     setModalVisible(true);
   };
 
+  const filteredProductos = productos.filter((producto) =>
+    producto.nombre_producto?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div className="flex flex-col h-screen">
       <div className="relative">
@@ -290,6 +296,13 @@ export default function InventoryManagementPage() {
             ☰
           </button>
           <h1 className="text-2xl font-bold">Gestión de Productos</h1>
+          <input
+            type="text"
+            placeholder="Buscar productos..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="px-4 py-2 rounded-lg text-black bg-white w-1/3 shadow-md focus:outline-none focus:ring-2 focus:ring-[#712b39]"
+          />
           <button
             onClick={handleOpenModal}
             className="bg-[#F4D03F] text-black px-4 py-2 rounded-lg font-bold hover:bg-yellow-600"
@@ -333,6 +346,12 @@ export default function InventoryManagementPage() {
               </li>
               <li
                 className="p-4 hover:bg-gray-200 cursor-pointer"
+                onClick={() => router.push('/register')}
+              >
+                Registrar usuario
+              </li>
+              <li
+                className="p-4 hover:bg-gray-200 cursor-pointer"
                 onClick={() => localStorage.clear() || router.push('/login')}
               >
                 Cerrar Sesión
@@ -345,7 +364,7 @@ export default function InventoryManagementPage() {
       <div className="flex flex-1 overflow-hidden">
         <div className="flex-1 bg-gray-100 overflow-y-auto p-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {productos.map((producto) => (
+            {filteredProductos.map((producto) => (
               <div
                 key={producto.id}
                 className="bg-white shadow-md p-4 rounded-lg text-center hover:shadow-lg transition-shadow"

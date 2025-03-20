@@ -356,6 +356,7 @@ const handleLogout = async () => {
   }
 };
 
+
   return (
     <div className="min-h-screen flex flex-col bg-gray-100">
       <div className="relative">
@@ -400,6 +401,12 @@ const handleLogout = async () => {
                 onClick={() => router.push('/kardex')}
               >
                 Kardex
+              </li>
+              <li
+                className="p-4 hover:bg-gray-200 cursor-pointer"
+                onClick={() => router.push('/register')}
+              >
+                Registrar usuario
               </li>
               <li
                 className="p-4 hover:bg-gray-200 cursor-pointer"
