@@ -1,3 +1,33 @@
+/**
+ * Componente que renderiza un formulario para registrar un ingreso de productos al inventario.
+ * 
+ * Este componente recibe las siguientes props:
+ * - `filteredProductos`: Un array de productos filtrados por el usuario.
+ * - `proveedores`: Un array de proveedores.
+ * - `selectedProveedor`: El ID del proveedor seleccionado.
+ * - `setSelectedProveedor`: Función para actualizar el proveedor seleccionado.
+ * - `searchProducto`: El texto de búsqueda del producto.
+ * - `selectedProducto`: El producto seleccionado.
+ * - `setSelectedProducto`: Función para actualizar el producto seleccionado.
+ * - `cantidadIngreso`: La cantidad a ingresar.
+ * - `setCantidadIngreso`: Función para actualizar la cantidad a ingresar.
+ * - `costoUnitario`: El costo unitario.
+ * - `setCostoUnitario`: Función para actualizar el costo unitario.
+ * - `motivo`: El motivo del ingreso.
+ * - `setMotivo`: Función para actualizar el motivo del ingreso.
+ * - `fechaCaducidad`: La fecha de caducidad.
+ * - `setFechaCaducidad`: Función para actualizar la fecha de caducidad.
+ * - `descripcion`: La descripción del producto.
+ * - `setDescripcion`: Función para actualizar la descripción del producto.
+ * - `marca`: La marca del producto.
+ * - `setMarca`: Función para actualizar la marca del producto.
+ * - `metodoValoracion`: El método de valoración.
+ * - `setMetodoValoracion`: Función para actualizar el método de valoración.
+ * - `isLoading`: Un booleano que indica si el formulario está cargando.
+ * - `handleSearchProducto`: Función para buscar productos.
+ * - `handleIngreso`: Función para registrar un ingreso.
+ */
+
 export default function FormularioIngreso({
   filteredProductos,
   proveedores,

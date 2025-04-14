@@ -13,6 +13,16 @@ import { useCart } from '../hooks/useCart';
 import { calculateTotal } from '../utils/cartHelpers';
 import { useAuth } from '../hooks/useAuth';
 
+/**
+ * Página de ventas del sistema.
+ *
+ * Esta página permite gestionar las ventas de productos en el sistema.
+ * Incluye un formulario para buscar y filtrar productos,
+ * un listado de productos disponibles,
+ * un carrito de compras y un botón para finalizar la venta.
+ *
+ *? @return {JSX.Element} La página de ventas.
+ */
 export default function DashboardPage() {
   const router = useRouter();
   const [productos, setProductos] = useState([]);

@@ -6,6 +6,18 @@ import FormularioIngreso from '../components/ingresos/FormularioIngreso';
 import { useAuth } from '../hooks/useAuth';
 import useIngresoProducto from '../hooks/useIngresoProducto';
 
+/**
+ * Página de ingreso de productos al inventario.
+ *
+ * Esta página permite gestionar las entradas de productos al inventario.
+ * Incluye un formulario para buscar y seleccionar productos, especificar
+ * cantidad, costo unitario, motivo de ingreso, fecha de caducidad y otros
+ * detalles relevantes. También gestiona el estado del menú y la autenticación
+ * del usuario.
+ *
+ *? @return {JSX.Element} La página de ingreso de productos.
+ */
+
 export default function IngresoProductosPage() {
   const router = useRouter();
   const { logout } = useAuth();
@@ -44,8 +56,8 @@ export default function IngresoProductosPage() {
     <div className="min-h-screen flex flex-col bg-gray-100">
       <Header
         title="Entradas al Inventario"
-        menuOpen={menuOpen}           // ✅ Estado real del menú
-        setMenuOpen={setMenuOpen}     // ✅ Función que actualiza el menú
+        menuOpen={menuOpen}           
+        setMenuOpen={setMenuOpen}     
         handleLogout={logout}
       />
 

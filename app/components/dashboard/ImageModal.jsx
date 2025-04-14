@@ -1,3 +1,10 @@
+/**
+ * Muestra una imagen ampliada en un modal.
+ *
+ *? @param {string} image URL de la imagen a mostrar.
+ *? @param {function} onClose Función a llamar cuando se cierra el modal.
+ *? @returns {JSX.Element} El modal con la imagen.
+ */
 export default function ImageModal({ image, onClose }) {
   return (
     <div

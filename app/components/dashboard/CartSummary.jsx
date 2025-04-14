@@ -1,3 +1,11 @@
+/**
+ * Componente que muestra el carrito de compras. Se muestra el nombre, cantidad y precio de cada producto,
+ * y se puede eliminar cada producto. Al final, se muestra el total de la venta y se puede finalizar la venta.
+ *
+ *? @param {Object[]} cart - Arreglo de objetos que representan cada producto en el carrito.
+ *? @param {function} onRemove - Funcion que se llama cuando se elimina un producto del carrito.
+ *? @param {function} onFinalize - Funcion que se llama cuando se finaliza la venta.
+ */
 export default function CartSummary({ cart, onRemove, onFinalize }) {
     const total = cart.reduce((total, item) => total + parseFloat(item.pvp_producto) * item.cantidad, 0).toFixed(2);
   

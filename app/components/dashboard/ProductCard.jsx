@@ -1,3 +1,10 @@
+/**
+ * Componente que muestra una tarjeta de un producto.
+ * 
+ *? @param {{ nombre_producto: string, categoria_nombre: string, pvp_producto: number, imagen_producto?: string }} producto - Información del producto.
+ *? @param {function} onAddToCart - Función que se llama cuando se agrega el producto al carrito. Recibe el producto como parámetro.
+ *? @param {function} onImageClick - Función que se llama cuando se hace clic en la imagen del producto. Recibe la URL de la imagen como parámetro.
+ */
 export default function ProductCard({ producto, onAddToCart, onImageClick }) {
     return (
 <div className="bg-white shadow-md p-3 rounded-lg text-center hover:shadow-lg transition-shadow w-full max-w-xs mx-auto">

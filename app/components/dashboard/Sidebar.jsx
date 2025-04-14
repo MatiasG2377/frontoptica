@@ -1,3 +1,11 @@
+/**
+ * Sidebar que muestra las categorías.
+ * 
+ *? @param {Array} categorias - Listado de categorías.
+ *? @param {Number} selectedCategoria - ID de la categoría seleccionada.
+ *? @param {Function} setSelectedCategoria - Función para asignar la categoría seleccionada.
+ *? @returns {ReactElement} Componente Sidebar.
+ */
 export default function Sidebar({ categorias, selectedCategoria, setSelectedCategoria }) {
     return (
       <div className="w-1/5 bg-[#712b39] text-white flex flex-col border-r border-black h-full" style={{ minWidth: '200px' }}>
