@@ -1,7 +1,7 @@
 export default function ProductCard({ producto, onAddToCart, onImageClick }) {
     return (
-      <div className="bg-white shadow-md p-3 rounded-lg text-center hover:shadow-lg transition-shadow">
-        <h3 className="font-bold">{producto.nombre_producto}</h3>
+<div className="bg-white shadow-md p-3 rounded-lg text-center hover:shadow-lg transition-shadow w-full max-w-xs mx-auto">
+<h3 className="font-bold">{producto.nombre_producto}</h3>
         <p className="text-sm">{producto.categoria_nombre || 'Sin Categoría'}</p>
         <p className="text-lg">${producto.pvp_producto}</p>
         {producto.imagen_producto && (

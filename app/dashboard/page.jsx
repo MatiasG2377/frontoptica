@@ -88,9 +88,12 @@ export default function DashboardPage() {
     router.push('/venta');
   };
 
-  const filteredProductos = productos.filter((producto) =>
+  const filteredProductos = productos
+  .filter((producto) => Number(producto.cantidad_producto) > 0)
+  .filter((producto) =>
     producto.nombre_producto.toLowerCase().includes(search.toLowerCase())
   );
+
 
   return (
     <div className="flex flex-col h-screen">
@@ -112,8 +115,8 @@ export default function DashboardPage() {
 
         <div className="flex-1 bg-gray-100 overflow-y-auto p-4">
           <h2 className="text-2xl font-bold mb-2 text-[#712b39]">Productos</h2>
-          <div className="grid grid-cols-3 gap-3">
-            {filteredProductos.map((producto) => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {filteredProductos.map((producto) => (
               <ProductCard
                 key={producto.id}
                 producto={producto}
