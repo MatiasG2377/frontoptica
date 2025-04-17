@@ -1,5 +1,21 @@
-export default function CardProducto({ producto, categorias, onEdit, onDelete }) {
-  const categoria = categorias.find((c) => c.id === producto.categoria_producto);
+/**
+ * Componente que muestra una tarjeta de un producto.
+ *
+ *? @param {{ id: number, nombre_producto: string, categoria_producto: number, pvp_producto: number, imagen_producto?: string, cantidad_producto: number, minimo_producto: number, maximo_producto: number, estado_producto: string }} producto - Información del producto.
+ *? @param {Array} categorias - Listado de categorías.
+ *? @param {function} onEdit - Función que se llama cuando se hace clic en el botón de editar. Recibe el producto como parámetro.
+ *? @param {function} onDelete - Función que se llama cuando se hace clic en el botón de eliminar. Recibe el ID del producto como parámetro.
+ *? @returns {ReactElement} Componente CardProducto.
+ */
+export default function CardProducto({
+  producto,
+  categorias,
+  onEdit,
+  onDelete,
+}) {
+  const categoria = categorias.find(
+    (c) => c.id === producto.categoria_producto
+  );
 
   const porcentajeStock = (
     ((producto.cantidad_producto - producto.minimo_producto) /
@@ -10,7 +26,9 @@ export default function CardProducto({ producto, categorias, onEdit, onDelete })
   return (
     <div className="bg-white shadow-md p-4 rounded-lg text-center hover:shadow-lg transition-shadow">
       <h3 className="font-bold">{producto.nombre_producto}</h3>
-      <p className="text-sm">{categoria?.nombre_categoria || 'Sin Categoría'}</p>
+      <p className="text-sm">
+        {categoria?.nombre_categoria || "Sin Categoría"}
+      </p>
       <p className="text-lg">${producto.pvp_producto}</p>
       <p className="text-sm">Cantidad: {producto.cantidad_producto}</p>
       <p className="text-sm">Estado: {producto.estado_producto}</p>
@@ -20,7 +38,7 @@ export default function CardProducto({ producto, categorias, onEdit, onDelete })
           src={producto.imagen_producto}
           alt={producto.nombre_producto}
           className="mx-auto my-2 rounded-md"
-          style={{ width: '90px', height: '90px', objectFit: 'cover' }}
+          style={{ width: "90px", height: "90px", objectFit: "cover" }}
         />
       )}
 

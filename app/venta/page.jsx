@@ -1,4 +1,5 @@
 'use client';
+
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
@@ -8,10 +9,11 @@ import useVenta from '../hooks/useVenta';
 import VentaMenu from '../components/venta/VentaMenu';
 import ClienteForm from '../components/venta/ClienteForm';
 import CartResumenVenta from '../components/venta/CartResumenVenta';
+import AbonoInicialForm from '../components/venta/AbonoForm';
 
 export default function VentaPage() {
   const router = useRouter();
-  const { logout } = useAuth(); // Hook centralizado de sesión
+  const { logout } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
 
   const {
@@ -25,6 +27,10 @@ export default function VentaPage() {
     setMetodoVenta,
     progreso,
   } = useVenta();
+
+  const [abonoInicial, setAbonoInicial] = useState(false);
+  const [montoAbono, setMontoAbono] = useState('');
+  const [metodoAbono, setMetodoAbono] = useState('Efectivo');
 
   useEffect(() => {
     const handleKeyDown = (event) => {
@@ -44,6 +50,20 @@ export default function VentaPage() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [handleCancel]);
 
+  const enhancedHandleSubmit = async () => {
+    if (cart.length === 0) {
+      alert('Debe agregar productos al carrito antes de registrar la venta.');
+      return;
+    }
+
+    if (!clienteData.ci_cliente || !clienteData.nombre_cliente) {
+      alert('Debe completar los datos del cliente.');
+      return;
+    }
+
+    await handleSubmit({ abonoInicial, montoAbono, metodoAbono });
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-gray-100">
       <VentaMenu
@@ -61,12 +81,29 @@ export default function VentaPage() {
         progreso={progreso}
       />
 
-      <CartResumenVenta
-        cart={cart}
-        isSubmitting={isSubmitting}
-        handleSubmit={handleSubmit}
-        handleCancel={handleCancel}
+      <AbonoInicialForm
+        abonoInicial={abonoInicial}
+        setAbonoInicial={setAbonoInicial}
+        montoAbono={montoAbono}
+        setMontoAbono={setMontoAbono}
+        metodoAbono={metodoAbono}
+        setMetodoAbono={setMetodoAbono}
       />
+
+      <br />
+      <CartResumenVenta
+  cart={cart}
+  isSubmitting={isSubmitting}
+  handleSubmit={() =>
+    enhancedHandleSubmit({
+      abonoInicial,
+      montoAbono,
+      metodoAbono,
+    })
+  }
+  handleCancel={handleCancel}
+/>
+
     </div>
   );
 }

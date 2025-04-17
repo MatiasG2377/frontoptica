@@ -1,17 +1,17 @@
-'use client';
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import Swal from 'sweetalert2';
+"use client";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import Swal from "sweetalert2";
 
-import Header from '../components/common/Header';
-import Sidebar from '../components/dashboard/Sidebar';
-import ProductCard from '../components/dashboard/ProductCard';
-import CartSummary from '../components/dashboard/CartSummary';
-import ImageModal from '../components/dashboard/ImageModal';
+import Header from "../components/common/Header";
+import Sidebar from "../components/dashboard/Sidebar";
+import ProductCard from "../components/dashboard/ProductCard";
+import CartSummary from "../components/dashboard/CartSummary";
+import ImageModal from "../components/dashboard/ImageModal";
 
-import { useCart } from '../hooks/useCart';
-import { calculateTotal } from '../utils/cartHelpers';
-import { useAuth } from '../hooks/useAuth';
+import { useCart } from "../hooks/useCart";
+import { calculateTotal } from "../utils/cartHelpers";
+import { useAuth } from "../hooks/useAuth";
 
 /**
  * Página de ventas del sistema.
@@ -28,7 +28,7 @@ export default function DashboardPage() {
   const [productos, setProductos] = useState([]);
   const [categorias, setCategorias] = useState([]);
   const [selectedCategoria, setSelectedCategoria] = useState(null);
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
   const [modalImage, setModalImage] = useState(null);
 
@@ -38,15 +38,15 @@ export default function DashboardPage() {
   useEffect(() => {
     const fetchCategorias = async () => {
       try {
-        const res = await fetch('http://127.0.0.1:8000/api/categoria/');
+        const res = await fetch("http://127.0.0.1:8000/api/categoria/");
         if (res.ok) {
           const data = await res.json();
           setCategorias(data);
         } else {
-          alert('Error al cargar las categorías.');
+          alert("Error al cargar las categorías.");
         }
       } catch (error) {
-        console.error('Error al obtener las categorías:', error);
+        console.error("Error al obtener las categorías:", error);
       }
     };
 
@@ -60,7 +60,7 @@ export default function DashboardPage() {
       try {
         const url = selectedCategoria
           ? `http://127.0.0.1:8000/api/productos-filtrados/?categoria=${selectedCategoria}`
-          : 'http://127.0.0.1:8000/api/productos-filtrados/';
+          : "http://127.0.0.1:8000/api/productos-filtrados/";
 
         const res = await fetch(url, {
           headers: {
@@ -72,11 +72,11 @@ export default function DashboardPage() {
           const data = await res.json();
           setProductos(data);
         } else {
-          alert('Error al cargar los productos');
+          alert("Error al cargar los productos");
         }
       } catch (error) {
-        console.error('Error al obtener los productos:', error);
-        alert('Hubo un problema al cargar los productos.');
+        console.error("Error al obtener los productos:", error);
+        alert("Hubo un problema al cargar los productos.");
       }
     };
 
@@ -86,24 +86,23 @@ export default function DashboardPage() {
   const handleFinalizeSale = () => {
     if (cart.length === 0) {
       Swal.fire({
-        title: 'Carrito vacío',
-        text: 'Agrega al menos un producto antes de finalizar la venta.',
-        icon: 'warning',
-        confirmButtonColor: '#712b39',
+        title: "Carrito vacío",
+        text: "Agrega al menos un producto antes de finalizar la venta.",
+        icon: "warning",
+        confirmButtonColor: "#712b39",
       });
       return;
     }
 
-    localStorage.setItem('cart', JSON.stringify(cart));
-    router.push('/venta');
+    localStorage.setItem("cart", JSON.stringify(cart));
+    router.push("/venta");
   };
 
   const filteredProductos = productos
-  .filter((producto) => Number(producto.cantidad_producto) > 0)
-  .filter((producto) =>
-    producto.nombre_producto.toLowerCase().includes(search.toLowerCase())
-  );
-
+    .filter((producto) => Number(producto.cantidad_producto) > 0)
+    .filter((producto) =>
+      producto.nombre_producto.toLowerCase().includes(search.toLowerCase())
+    );
 
   return (
     <div className="flex flex-col h-screen">
@@ -126,7 +125,7 @@ export default function DashboardPage() {
         <div className="flex-1 bg-gray-100 overflow-y-auto p-4">
           <h2 className="text-2xl font-bold mb-2 text-[#712b39]">Productos</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {filteredProductos.map((producto) => (
+            {filteredProductos.map((producto) => (
               <ProductCard
                 key={producto.id}
                 producto={producto}

@@ -1,6 +1,6 @@
 /**
  * Componente que renderiza un formulario para registrar un ingreso de productos al inventario.
- * 
+ *
  * Este componente recibe las siguientes props:
  * - `filteredProductos`: Un array de productos filtrados por el usuario.
  * - `proveedores`: Un array de proveedores.
@@ -59,7 +59,9 @@ export default function FormularioIngreso({
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {/* Buscar y seleccionar producto */}
         <div className="col-span-1 sm:col-span-2 lg:col-span-4">
-          <label className="block text-gray-700 font-bold mb-2">Seleccionar Producto</label>
+          <label className="block text-gray-700 font-bold mb-2">
+            Seleccionar Producto
+          </label>
           <input
             type="text"
             className="w-full p-3 border rounded-lg mb-4"
@@ -73,7 +75,7 @@ export default function FormularioIngreso({
                 <li
                   key={producto.id}
                   className={`p-3 cursor-pointer hover:bg-gray-100 ${
-                    selectedProducto?.id === producto.id ? 'bg-gray-200' : ''
+                    selectedProducto?.id === producto.id ? "bg-gray-200" : ""
                   }`}
                   onClick={() => setSelectedProducto(producto)}
                 >
@@ -85,8 +87,10 @@ export default function FormularioIngreso({
           {selectedProducto && (
             <div className="mt-4">
               <p className="text-lg font-semibold text-gray-700">
-                Producto Seleccionado:{' '}
-                <span className="text-gray-900">{selectedProducto.nombre_producto}</span>
+                Producto Seleccionado:{" "}
+                <span className="text-gray-900">
+                  {selectedProducto.nombre_producto}
+                </span>
               </p>
             </div>
           )}
@@ -94,10 +98,12 @@ export default function FormularioIngreso({
 
         {/* Proveedor */}
         <div className="col-span-1 sm:col-span-2 lg:col-span-2">
-          <label className="block text-gray-700 font-bold mb-2">Seleccionar Proveedor</label>
+          <label className="block text-gray-700 font-bold mb-2">
+            Seleccionar Proveedor
+          </label>
           <select
             className="w-full p-3 border rounded-lg mb-4"
-            value={selectedProveedor || ''}
+            value={selectedProveedor || ""}
             onChange={(e) => setSelectedProveedor(e.target.value)}
           >
             <option value="">Seleccionar proveedor...</option>
@@ -121,7 +127,9 @@ export default function FormularioIngreso({
           />
         </div>
         <div className="col-span-1">
-          <label className="block text-gray-700 font-bold mb-2">Costo Unitario</label>
+          <label className="block text-gray-700 font-bold mb-2">
+            Costo Unitario
+          </label>
           <input
             type="number"
             className="w-full p-3 border rounded-lg"
@@ -133,7 +141,9 @@ export default function FormularioIngreso({
 
         {/* Motivo */}
         <div className="col-span-1 sm:col-span-2 lg:col-span-4">
-          <label className="block text-gray-700 font-bold mb-2">Motivo del Ingreso</label>
+          <label className="block text-gray-700 font-bold mb-2">
+            Motivo del Ingreso
+          </label>
           <textarea
             className="w-full p-3 border rounded-lg"
             placeholder="Motivo del ingreso"
@@ -144,7 +154,9 @@ export default function FormularioIngreso({
 
         {/* Fecha de Caducidad y Descripción */}
         <div className="col-span-1 sm:col-span-2 lg:col-span-2">
-          <label className="block text-gray-700 font-bold mb-2">Fecha de Caducidad</label>
+          <label className="block text-gray-700 font-bold mb-2">
+            Fecha de Caducidad
+          </label>
           <input
             type="date"
             className="w-full p-3 border rounded-lg"
@@ -153,7 +165,9 @@ export default function FormularioIngreso({
           />
         </div>
         <div className="col-span-1 sm:col-span-2 lg:col-span-2">
-          <label className="block text-gray-700 font-bold mb-2">Descripción</label>
+          <label className="block text-gray-700 font-bold mb-2">
+            Descripción
+          </label>
           <textarea
             className="w-full p-3 border rounded-lg"
             placeholder="Descripción del producto (opcional)"
@@ -174,7 +188,9 @@ export default function FormularioIngreso({
           />
         </div>
         <div className="col-span-1 sm:col-span-2 lg:col-span-2">
-          <label className="block text-gray-700 font-bold mb-2">Método de Valoración</label>
+          <label className="block text-gray-700 font-bold mb-2">
+            Método de Valoración
+          </label>
           <select
             className="w-full p-3 border rounded-lg"
             value={metodoValoracion}
@@ -192,11 +208,11 @@ export default function FormularioIngreso({
         <button
           onClick={handleIngreso}
           className={`w-full bg-[#712b39] text-white py-3 rounded-lg hover:bg-[#5e242e] ${
-            isLoading ? 'opacity-50 cursor-not-allowed' : ''
+            isLoading ? "opacity-50 cursor-not-allowed" : ""
           }`}
           disabled={isLoading}
         >
-          {isLoading ? 'Registrando...' : 'Registrar Ingreso'}
+          {isLoading ? "Registrando..." : "Registrar Ingreso"}
         </button>
       </div>
     </div>

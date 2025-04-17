@@ -1,10 +1,10 @@
-'use client';
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import Header from '../components/common/Header2';
-import FormularioIngreso from '../components/ingresos/FormularioIngreso';
-import { useAuth } from '../hooks/useAuth';
-import useIngresoProducto from '../hooks/useIngresoProducto';
+"use client";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Header from "../components/common/Header2";
+import FormularioIngreso from "../components/ingresos/FormularioIngreso";
+import { useAuth } from "../hooks/useAuth";
+import useIngresoProducto from "../hooks/useIngresoProducto";
 
 /**
  * Página de ingreso de productos al inventario.
@@ -56,8 +56,8 @@ export default function IngresoProductosPage() {
     <div className="min-h-screen flex flex-col bg-gray-100">
       <Header
         title="Entradas al Inventario"
-        menuOpen={menuOpen}           
-        setMenuOpen={setMenuOpen}     
+        menuOpen={menuOpen}
+        setMenuOpen={setMenuOpen}
         handleLogout={logout}
       />
 

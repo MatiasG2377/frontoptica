@@ -82,7 +82,7 @@ export default function useVenta() {
     }
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async ({ abonoInicial = false, montoAbono = '', metodoAbono = 'Efectivo' } = {}) => {
     if (
       !isValidCI(clienteData.ci_cliente) ||
       !clienteData.nombre_cliente ||
@@ -101,6 +101,27 @@ export default function useVenta() {
 
       const venta = await registrarVenta(cliente.id, total);
       await Promise.all(cart.map((producto) => procesarProducto(venta.id, producto)));
+
+      // Registrar abono si corresponde
+      if (abonoInicial && parseFloat(montoAbono) > 0) {
+        console.log('Registrando abono:', {
+          ventaId: venta?.id,
+          clienteId: cliente?.id,
+        });
+        
+        await fetch('http://127.0.0.1:8000/api/abono/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            venta: venta.id,
+            cliente: cliente.id,
+            monto: parseFloat(montoAbono),
+            metodo_pago: metodoAbono,
+          }),
+        });
+      }
 
       Swal.fire('Éxito', 'La venta se ha registrado correctamente.', 'success').then(() => {
         router.push('/dashboard');
@@ -170,14 +191,11 @@ export default function useVenta() {
 
   const procesarProducto = async (ventaId, producto) => {
     const cantidad = producto.cantidad || 1;
-  
-    // ✅ Paso 1: obtener el producto actualizado desde backend
+
     const resProd = await fetch(`http://127.0.0.1:8000/api/producto/${producto.id}/`);
     const productoActualizado = await resProd.json();
-  
     const nuevoStock = productoActualizado.cantidad_producto - cantidad;
-  
-    // Paso 2: Artículo de venta
+
     await fetch('http://127.0.0.1:8000/api/articuloventa/', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -189,8 +207,7 @@ export default function useVenta() {
         descuento_articuloVenta: 0,
       }),
     });
-  
-    // Paso 3: Movimiento de inventario
+
     await fetch('http://127.0.0.1:8000/api/movimiento/', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -202,9 +219,8 @@ export default function useVenta() {
         motivo_movimientoInventario: 'Venta realizada',
       }),
     });
-  
-    // ✅ Paso 4: Kardex con stock actualizado real
-    const kardexRes = await fetch('http://127.0.0.1:8000/api/kardex/', {
+
+    await fetch('http://127.0.0.1:8000/api/kardex/', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -218,15 +234,7 @@ export default function useVenta() {
         referencia_kardex: `Venta #${ventaId}`,
       }),
     });
-    
-    if (!kardexRes.ok) {
-      const errorText = await kardexRes.text();
-      console.error('❌ Error al registrar en el Kardex:', errorText);
-      Swal.fire('Error', `No se pudo registrar el movimiento en el Kardex: ${errorText}`, 'error');
-    }
-    
-  
-    // Paso 5: Actualizar stock en el producto
+
     await fetch(`http://127.0.0.1:8000/api/producto/${producto.id}/`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
@@ -235,7 +243,6 @@ export default function useVenta() {
       }),
     });
   };
-  
 
   return {
     cart,

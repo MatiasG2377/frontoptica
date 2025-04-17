@@ -1,20 +1,62 @@
+/**
+ * Componente que renderiza un formulario para registrar un nuevo usuario.
+ *
+ * Este formulario contiene campos para ingresar el nombre de usuario, correo electrónico,
+ * contraseña, nombre, apellido, teléfono, rol de usuario y sucursal.
+ *
+ * Props:
+ * - `username`: El nombre de usuario.
+ * - `setUsername`: Función para actualizar el nombre de usuario.
+ * - `email`: El correo electrónico.
+ * - `setEmail`: Función para actualizar el correo electrónico.
+ * - `password`: La contraseña.
+ * - `setPassword`: Función para actualizar la contraseña.
+ * - `nombreUsuario`: El nombre del usuario.
+ * - `setNombreUsuario`: Función para actualizar el nombre del usuario.
+ * - `apellidoUsuario`: El apellido del usuario.
+ * - `setApellidoUsuario`: Función para actualizar el apellido del usuario.
+ * - `telefonoUsuario`: El teléfono del usuario.
+ * - `setTelefonoUsuario`: Función para actualizar el teléfono del usuario.
+ * - `rolUsuario`: El rol del usuario.
+ * - `setRolUsuario`: Función para actualizar el rol del usuario.
+ * - `sucursalUsuario`: La sucursal asociada al usuario.
+ * - `setSucursalUsuario`: Función para actualizar la sucursal del usuario.
+ * - `sucursales`: Lista de sucursales disponibles.
+ * - `handleSubmit`: Función para manejar el envío del formulario.
+ *
+ * El formulario permite seleccionar el rol de usuario y la sucursal desde un menú desplegable
+ * y realiza el registro del usuario al enviarse.
+ */
+
 export default function RegisterForm({
-  username, setUsername,
-  email, setEmail,
-  password, setPassword,
-  nombreUsuario, setNombreUsuario,
-  apellidoUsuario, setApellidoUsuario,
-  telefonoUsuario, setTelefonoUsuario,
-  rolUsuario, setRolUsuario,
-  sucursalUsuario, setSucursalUsuario,
+  username,
+  setUsername,
+  email,
+  setEmail,
+  password,
+  setPassword,
+  nombreUsuario,
+  setNombreUsuario,
+  apellidoUsuario,
+  setApellidoUsuario,
+  telefonoUsuario,
+  setTelefonoUsuario,
+  rolUsuario,
+  setRolUsuario,
+  sucursalUsuario,
+  setSucursalUsuario,
   sucursales,
-  handleSubmit
+  handleSubmit,
 }) {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label htmlFor="username" className="block text-sm font-medium" style={{ color: '#712b39' }}>
+          <label
+            htmlFor="username"
+            className="block text-sm font-medium"
+            style={{ color: "#712b39" }}
+          >
             Nombre de Usuario
           </label>
           <input
@@ -29,7 +71,11 @@ export default function RegisterForm({
         </div>
 
         <div>
-          <label htmlFor="email" className="block text-sm font-medium" style={{ color: '#712b39' }}>
+          <label
+            htmlFor="email"
+            className="block text-sm font-medium"
+            style={{ color: "#712b39" }}
+          >
             Correo Electrónico
           </label>
           <input
@@ -44,7 +90,11 @@ export default function RegisterForm({
         </div>
 
         <div>
-          <label htmlFor="password" className="block text-sm font-medium" style={{ color: '#712b39' }}>
+          <label
+            htmlFor="password"
+            className="block text-sm font-medium"
+            style={{ color: "#712b39" }}
+          >
             Contraseña
           </label>
           <input
@@ -59,7 +109,11 @@ export default function RegisterForm({
         </div>
 
         <div>
-          <label htmlFor="nombreUsuario" className="block text-sm font-medium" style={{ color: '#712b39' }}>
+          <label
+            htmlFor="nombreUsuario"
+            className="block text-sm font-medium"
+            style={{ color: "#712b39" }}
+          >
             Nombre
           </label>
           <input
@@ -73,7 +127,11 @@ export default function RegisterForm({
         </div>
 
         <div>
-          <label htmlFor="apellidoUsuario" className="block text-sm font-medium" style={{ color: '#712b39' }}>
+          <label
+            htmlFor="apellidoUsuario"
+            className="block text-sm font-medium"
+            style={{ color: "#712b39" }}
+          >
             Apellido
           </label>
           <input
@@ -87,7 +145,11 @@ export default function RegisterForm({
         </div>
 
         <div>
-          <label htmlFor="telefonoUsuario" className="block text-sm font-medium" style={{ color: '#712b39' }}>
+          <label
+            htmlFor="telefonoUsuario"
+            className="block text-sm font-medium"
+            style={{ color: "#712b39" }}
+          >
             Teléfono
           </label>
           <input
@@ -101,7 +163,11 @@ export default function RegisterForm({
         </div>
 
         <div>
-          <label htmlFor="rolUsuario" className="block text-sm font-medium" style={{ color: '#712b39' }}>
+          <label
+            htmlFor="rolUsuario"
+            className="block text-sm font-medium"
+            style={{ color: "#712b39" }}
+          >
             Rol de Usuario
           </label>
           <select
@@ -117,7 +183,11 @@ export default function RegisterForm({
         </div>
 
         <div>
-          <label htmlFor="sucursalUsuario" className="block text-sm font-medium" style={{ color: '#712b39' }}>
+          <label
+            htmlFor="sucursalUsuario"
+            className="block text-sm font-medium"
+            style={{ color: "#712b39" }}
+          >
             Sucursal
           </label>
           <select
@@ -139,7 +209,7 @@ export default function RegisterForm({
       <button
         type="submit"
         className="w-full py-2 px-4 rounded-lg text-white"
-        style={{ backgroundColor: '#712b39' }}
+        style={{ backgroundColor: "#712b39" }}
       >
         Registrar Usuario
       </button>

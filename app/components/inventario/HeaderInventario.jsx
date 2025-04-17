@@ -1,9 +1,32 @@
-'use client';
-export default function HeaderInventario({ searchTerm, setSearchTerm, onOpenModal, menuOpen, setMenuOpen, router }) {
+"use client";
+/**
+ * Componente que renderiza el header de la página de gestión de productos,
+ * incluyendo un formulario de búsqueda, un botón para agregar un producto nuevo
+ * y un menú desplegable con enlaces a otras páginas del sistema.
+ *
+ *? @param {string} searchTerm - El texto de búsqueda del formulario.
+ *? @param {function} setSearchTerm - La función para actualizar el estado del formulario de búsqueda.
+ *? @param {function} onOpenModal - La función para abrir el modal de creación de un nuevo producto.
+ *? @param {boolean} menuOpen - El estado del menú desplegable.
+ *? @param {function} setMenuOpen - La función para actualizar el estado del menú desplegable.
+ *? @param {function} router - La función para redirigir a otra página.
+ *? @returns {JSX.Element} El componente HeaderInventario.
+ */
+export default function HeaderInventario({
+  searchTerm,
+  setSearchTerm,
+  onOpenModal,
+  menuOpen,
+  setMenuOpen,
+  router,
+}) {
   return (
     <div className="relative">
       <div className="flex justify-between items-center bg-[#712b39] text-white p-4 shadow-md border-b border-black">
-        <button onClick={() => setMenuOpen(!menuOpen)} className="text-xl font-bold">
+        <button
+          onClick={() => setMenuOpen(!menuOpen)}
+          className="text-xl font-bold"
+        >
           ☰
         </button>
         <h1 className="text-2xl font-bold">Gestión de Productos</h1>
@@ -26,14 +49,17 @@ export default function HeaderInventario({ searchTerm, setSearchTerm, onOpenModa
         <div className="absolute top-16 left-0 bg-white shadow-lg rounded-lg w-64 z-50">
           <ul className="flex flex-col text-black">
             {[
-              { path: '/inventario', label: 'Gestión de Productos' },
-              { path: '/ingresos', label: 'Entradas al Inventario' },
-              { path: '/registro-clientes', label: 'Registro de Clientes' },
-              { path: '/visualizacion-reportes', label: 'Visualización de Reportes' },
-              { path: '/dashboard', label: 'Venta' },
-              { path: '/kardex', label: 'Kardex' },
-              { path: '/register', label: 'Registrar usuario' },
-              { path: '/login', label: 'Cerrar Sesión', logout: true }
+              { path: "/inventario", label: "Gestión de Productos" },
+              { path: "/ingresos", label: "Entradas al Inventario" },
+              { path: "/registro-clientes", label: "Registro de Clientes" },
+              {
+                path: "/visualizacion-reportes",
+                label: "Visualización de Reportes",
+              },
+              { path: "/dashboard", label: "Venta" },
+              { path: "/kardex", label: "Kardex" },
+              { path: "/register", label: "Registrar usuario" },
+              { path: "/login", label: "Cerrar Sesión", logout: true },
             ].map(({ path, label, logout }) => (
               <li
                 key={path}

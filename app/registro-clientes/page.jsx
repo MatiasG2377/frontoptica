@@ -1,20 +1,26 @@
-'use client';
-import useCliente from '../hooks/useCliente'; // Asegúrate de que la ruta sea correcta
-import FormularioCliente from '../components/registro-clientes/FormularioCliente';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
-import Header from '../components/common/Header2';
-import { useAuth } from '../hooks/useAuth'; // ajusta el path si está en otra carpeta
+"use client";
+import useCliente from "../hooks/useCliente";
+import FormularioCliente from "../components/registro-clientes/FormularioCliente";
+import { useState } from "react";
+import Header from "../components/common/Header2";
+import { useAuth } from "../hooks/useAuth";
 
+/**
+ * Página de registro de clientes.
+ *
+ * Esta página permite a los usuarios registrar nuevos clientes.
+ * Incluye un formulario para capturar los datos del cliente y
+ * un botón para guardar los cambios.
+ *
+ *? @return {JSX.Element} La p gina de registro de clientes.
+ */
 export default function RegistroClientePage() {
-  const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const { logout } = useAuth(); // ✅ Aquí traemos la función logout directamente
+  const { logout } = useAuth();
 
   const {
     clienteData,
-    setClienteData,
     clienteExistente,
     isSubmitting,
     handleInputChange,
@@ -27,7 +33,7 @@ export default function RegistroClientePage() {
         title="Registro de Clientes"
         menuOpen={menuOpen}
         setMenuOpen={setMenuOpen}
-        handleLogout={logout} // ✅ Acá le pasamos el logout del hook
+        handleLogout={logout}
       />
 
       <FormularioCliente

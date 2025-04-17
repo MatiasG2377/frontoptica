@@ -1,6 +1,6 @@
-'use client';
-import { useLogin } from '../hooks/useLogin';
-import LoginForm from '../components/login/LoginForm';
+"use client";
+import { useLogin } from "../hooks/useLogin";
+import LoginForm from "../components/login/LoginForm";
 
 /**
  * Página de inicio de sesión de los empleados.
@@ -13,17 +13,18 @@ import LoginForm from '../components/login/LoginForm';
  * Si el usuario no existe o la contraseña es incorrecta, se mostrará un
  * mensaje de error.
  *
- * @return {JSX.Element} La página de inicio de sesión.
+ *? @return {JSX.Element} La página de inicio de sesión.
  */
 export default function LoginPage() {
-  const { username, password, setUsername, setPassword, handleSubmit } = useLogin();
-/**
- * Redirige al usuario a la página de inicio de sesión de Django.
- *
- * @function
- */
+  const { username, password, setUsername, setPassword, handleSubmit } =
+    useLogin();
+  /**
+   * Redirige al usuario a la página de inicio de sesión de Django.
+   *
+   *? @function
+   */
   const redirectToAdminLogin = () => {
-    window.location.href = 'http://localhost:8000/admin/login/?next=/admin/';
+    window.location.href = "http://localhost:8000/admin/login/?next=/admin/";
   };
 
   return (

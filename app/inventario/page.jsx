@@ -1,23 +1,29 @@
-'use client';
-import { useRouter } from 'next/navigation';
-import { useAuth } from '../hooks/useAuth';
-import useInventario from '../hooks/useInventario';
+"use client";
+import { useRouter } from "next/navigation";
+import useInventario from "../hooks/useInventario";
 
-import HeaderInventario from '../components/inventario/HeaderInventario';
-import CardProducto from '../components/inventario/CardProducto';
-import FormularioProducto from '../components/inventario/FormularioProducto';
-import { useState } from 'react';
+import HeaderInventario from "../components/inventario/HeaderInventario";
+import CardProducto from "../components/inventario/CardProducto";
+import FormularioProducto from "../components/inventario/FormularioProducto";
+import { useState } from "react";
+
+/**
+ * Página de gestión de inventario.
+ *
+ * Presenta una lista de productos con sus respectivos datos y permite
+ * agregar, editar y eliminar productos. También permite filtrar los
+ * productos por nombre o categoría.
+ *
+ *? @returns {JSX.Element} P gina de gesti n de inventario.
+ */
 
 export default function InventoryManagementPage() {
   const router = useRouter();
-  const { logout } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
 
   const {
-    productos,
     categorias,
     proveedores,
-    selectedProducto,
     formData,
     setFormData,
     file,
@@ -40,7 +46,7 @@ export default function InventoryManagementPage() {
         setSearchTerm={setSearchTerm}
         onOpenModal={handleOpenModal}
         menuOpen={menuOpen}
-        setMenuOpen= {setMenuOpen}
+        setMenuOpen={setMenuOpen}
         router={router}
       />
 

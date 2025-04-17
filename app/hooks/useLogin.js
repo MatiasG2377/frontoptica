@@ -1,6 +1,6 @@
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import Swal from 'sweetalert2';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Swal from "sweetalert2";
 
 /**
  * Hook para manejar el login de un usuario.
@@ -14,8 +14,8 @@ import Swal from 'sweetalert2';
  *   al panel principal si el login es exitoso.
  */
 export function useLogin() {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const router = useRouter();
 
   /**
@@ -27,21 +27,28 @@ export function useLogin() {
    */
   const fetchUserId = async (username) => {
     try {
-      const res = await fetch(`http://127.0.0.1:8000/api/usuario/obtener-id/?username=${username}`, {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('access_token')}`,
-        },
-      });
+      const res = await fetch(
+        `http://127.0.0.1:8000/api/usuario/obtener-id/?username=${username}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+          },
+        }
+      );
       if (res.ok) {
         const data = await res.json();
-        localStorage.setItem('userId', data.id);
+        localStorage.setItem("userId", data.id);
         return data.id;
       }
       const error = await res.json();
-      throw new Error(error.error || 'Error desconocido.');
+      throw new Error(error.error || "Error desconocido.");
     } catch (err) {
-      Swal.fire('Error', err.message || 'No se pudo obtener el ID del usuario.', 'error');
+      Swal.fire(
+        "Error",
+        err.message || "No se pudo obtener el ID del usuario.",
+        "error"
+      );
       return null;
     }
   };
@@ -54,48 +61,47 @@ export function useLogin() {
    * actualización en el almacenamiento local, obtiene el ID del usuario y redirige
    * al usuario al panel principal. Muestra mensajes de error en caso de fallos.
    *
-   * @param {Object} e - El evento de envío del formulario.
+   *? @param {Object} e - El evento de envío del formulario.
    */
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch('http://127.0.0.1:8000/api/login/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("http://127.0.0.1:8000/api/login/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
       });
 
       if (res.ok) {
         const { access, refresh } = await res.json();
-        localStorage.setItem('access_token', access);
-        localStorage.setItem('refresh_token', refresh);
+        localStorage.setItem("access_token", access);
+        localStorage.setItem("refresh_token", refresh);
 
         const userId = await fetchUserId(username);
 
         if (userId) {
           Swal.fire({
-            icon: 'success',
-            title: 'Inicio de sesión exitoso',
-            text: 'Serás redirigido al panel principal.',
+            icon: "success",
+            title: "Inicio de sesión exitoso",
+            text: "Serás redirigido al panel principal.",
             timer: 2000,
             showConfirmButton: false,
           }).then(() => {
-            router.push('/dashboard');
+            router.push("/dashboard");
           });
         }
       } else {
         const error = await res.json();
         Swal.fire({
-          icon: 'error',
-          title: 'Error de autenticación',
-          text: error.detail || 'Credenciales inválidas.',
-          confirmButtonColor: '#712b39',
+          icon: "error",
+          title: "Error de autenticación",
+          text: error.detail || "Credenciales inválidas.",
+          confirmButtonColor: "#712b39",
         });
-              }
+      }
     } catch (err) {
-      console.error('Error:', err);
-      Swal.fire('Error', 'Problema al intentar iniciar sesión.', 'error');
+      Swal.fire("Error", "Problema al intentar iniciar sesión.", "error");
     }
   };
 
